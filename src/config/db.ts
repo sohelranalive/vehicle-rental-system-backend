@@ -8,7 +8,7 @@ export const pool = new Pool({
 
 const initializeDB = async () => {
   await pool.query(`
-        CREATE TABLE IF NOT EXISTS vehicles(
+        CREATE TABLE IF NOT EXISTS Vehicles(
         id SERIAL PRIMARY KEY,
         vehicle_name VARCHAR(100) NOT NULL,
         type TEXT CHECK(type IN ('car', 'bike', 'van', 'SUV')),

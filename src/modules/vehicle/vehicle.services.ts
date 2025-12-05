@@ -10,7 +10,7 @@ const createVehicle = async (payload: Record<string, unknown>) => {
   } = payload;
 
   const result = await pool.query(
-    `INSERT INTO vehicles (vehicle_name, type, registration_number, daily_rent_price, availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
+    `INSERT INTO Vehicles (vehicle_name, type, registration_number, daily_rent_price, availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
     [
       vehicle_name,
       type,
@@ -22,6 +22,51 @@ const createVehicle = async (payload: Record<string, unknown>) => {
   return result;
 };
 
+const getAllVehicle = async () => {
+  const result = await pool.query(`SELECT * FROM Vehicles`);
+  return result;
+};
+
+const getSingleVehicle = async (id: string) => {
+  const result = await pool.query(`SELECT * FROM Vehicles WHERE id=$1`, [id]);
+  return result;
+};
+
+const updateVehicleInfo = async (
+  id: string,
+  payload: Record<string, unknown>
+) => {
+  let keys = [];
+  let values = [];
+
+  const expectedProperties = [
+    "vehicle_name",
+    "type",
+    "registration_number",
+    "daily_rent_price",
+    "availability_status",
+  ];
+
+  for (const key in payload) {
+    if (expectedProperties.includes(key)) {
+      keys.push(key);
+      values.push(payload[key]);
+    }
+  }
+
+  const updateQuery = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+  const result = await pool.query(
+    `UPDATE Vehicles SET ${updateQuery} WHERE id=$${
+      keys.length + 1
+    } RETURNING *`,
+    [...values, id]
+  );
+  return result;
+};
+
 export const vehicleServices = {
   createVehicle,
+  getAllVehicle,
+  getSingleVehicle,
+  updateVehicleInfo,
 };
