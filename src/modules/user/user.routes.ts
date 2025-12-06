@@ -1,9 +1,16 @@
-// import express from "express";
-// import { userControllers } from "./user.controllers";
+import express from "express";
+import { userControllers } from "./user.controllers";
+import auth from "../../middleware/auth";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // create user
-// router.post("/", userControllers.createUser);
+// create user
+router.get("/", auth("admin"), userControllers.getAllUsers);
 
-// export const userRoutes = router;
+// update
+router.put("/:userId", auth("admin", "customer"), userControllers.updateUser);
+
+// delete User
+router.delete("/:userId", auth("admin"), userControllers.deleteUser);
+
+export const userRoutes = router;

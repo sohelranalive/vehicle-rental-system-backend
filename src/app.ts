@@ -3,6 +3,7 @@ import { vehicleRoutes } from "./modules/vehicle/vehicle.routes";
 import initializeDB from "./config/db";
 import { bookingRoutes } from "./modules/booking/booking.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
+import { userRoutes } from "./modules/user/user.routes";
 
 // start using express app
 const app = express();
@@ -22,13 +23,10 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1/vehicles", vehicleRoutes);
 
 // working with user module
-// app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // working with auth module "signup"
 app.use("/api/v1/auth", authRoutes);
-
-// // working with auth module "signin"
-// app.use("/api/v1/auth/signin", authRoutes);
 
 // working with booking module
 app.use("/api/v1/bookings", bookingRoutes);

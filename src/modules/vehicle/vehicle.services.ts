@@ -1,23 +1,28 @@
 import { pool } from "../../config/db";
 
 const createVehicle = async (payload: Record<string, unknown>) => {
-  const {
-    vehicle_name,
-    type,
-    registration_number,
-    daily_rent_price,
-    availability_status,
-  } = payload;
+  let keys = [];
+  let values = [];
+
+  const expectedProperties = [
+    "vehicle_name",
+    "type",
+    "registration_number",
+    "daily_rent_price",
+    "availability_status",
+  ];
+
+  for (const key in payload) {
+    if (expectedProperties.includes(key)) {
+      keys.push(key);
+      values.push(payload[key]);
+    }
+  }
+  const updateQuery = keys.map((key, i) => `$${i + 1}`).join(", ");
 
   const result = await pool.query(
-    `INSERT INTO Vehicles (vehicle_name, type, registration_number, daily_rent_price, availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-    [
-      vehicle_name,
-      type,
-      registration_number,
-      daily_rent_price,
-      availability_status,
-    ]
+    `INSERT INTO Vehicles (${keys}) VALUES(${updateQuery}) RETURNING *`,
+    [...values]
   );
   return result;
 };
@@ -65,7 +70,10 @@ const updateVehicleInfo = async (
 };
 
 const deleteVehicle = async (id: string) => {
-  const result = await pool.query(`DELETE FROM Vehicles WHERE id=$1`, [id]);
+  const result = await pool.query(
+    `DELETE FROM Vehicles WHERE id=$1 AND availability_status='available'`,
+    [id]
+  );
   return result;
 };
 
