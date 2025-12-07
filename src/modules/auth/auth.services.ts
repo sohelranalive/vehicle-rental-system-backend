@@ -4,19 +4,52 @@ import jwt from "jsonwebtoken";
 import config from "../../config";
 
 const createUser = async (payload: Record<string, unknown>) => {
-  const { name, email, password, phone, role } = payload;
+  let keys = [];
+  let values = [];
 
+  const expectedProperties = ["name", "email", "password", "phone", "role"];
+
+  for (const key in payload) {
+    if (expectedProperties.includes(key)) {
+      keys.push(key);
+      values.push(payload[key]);
+    }
+  }
+
+  const updateQuery = keys.map((key, i) => `$${i + 1}`).join(", ");
+
+  const passwordIndex = keys.indexOf("password");
+  const password = values[passwordIndex];
   const hashedPassword = await bcrypt.hash(password as string, 10);
+  values[passwordIndex] = hashedPassword;
 
   const result = await pool.query(
-    `INSERT INTO Users (name, email, password, phone, role) VALUES($1, $2, $3, $4, $5) RETURNING id, name, email, phone, role`,
-    [name, email, hashedPassword, phone, role ? role : "customer"]
+    `INSERT INTO Users (${keys}) VALUES(${updateQuery}) RETURNING id, name, email, phone, role`,
+    [...values]
   );
   return result;
 };
 
 const userSignIn = async (payload: Record<string, unknown>) => {
-  const { email, password } = payload;
+  // const { email, password } = payload;
+
+  let keys = [];
+  let values = [];
+
+  const expectedProperties = ["email", "password"];
+
+  for (const key in payload) {
+    if (expectedProperties.includes(key)) {
+      keys.push(key);
+      values.push(payload[key]);
+    }
+  }
+
+  const emailIndex = keys.indexOf("email");
+  const email = values[emailIndex];
+
+  const passwordIndex = keys.indexOf("password");
+  const password = values[passwordIndex];
 
   const result = await pool.query(`SELECT * FROM Users WHERE email=$1`, [
     email,
@@ -46,7 +79,6 @@ const userSignIn = async (payload: Record<string, unknown>) => {
       config.jwt_secret as string,
       { expiresIn: "7d" }
     );
-
     const { password, ...remainingInfo } = currentUser;
 
     return { token: token, user: remainingInfo };

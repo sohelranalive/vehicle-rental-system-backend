@@ -77,10 +77,19 @@ const deleteVehicle = async (id: string) => {
   return result;
 };
 
+const getVehiclesViaCustomer = async (id: string) => {
+  const result = await pool.query(
+    `SELECT * FROM Bookings WHERE customer_id=$1`,
+    [id]
+  );
+  return result;
+};
+
 export const vehicleServices = {
   createVehicle,
   getAllVehicle,
   getSingleVehicle,
   updateVehicleInfo,
   deleteVehicle,
+  getVehiclesViaCustomer,
 };

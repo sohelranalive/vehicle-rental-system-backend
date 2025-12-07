@@ -14,7 +14,7 @@ const initializeDB = async () => {
         type TEXT CHECK(type IN ('car', 'bike', 'van', 'SUV')),
         registration_number TEXT NOT NULL UNIQUE,
         daily_rent_price NUMERIC NOT NULL CHECK(daily_rent_price > 0),
-        availability_status TEXT CHECK(availability_status IN ('available', 'booked')));
+        availability_status TEXT DEFAULT 'available' CHECK(availability_status IN ('available', 'booked')));
         `);
 
   await pool.query(`
@@ -24,7 +24,7 @@ const initializeDB = async () => {
         email VARCHAR(100) NOT NULL UNIQUE CHECK(email = LOWER(email)),
         password VARCHAR(100) NOT NULL CHECK(LENGTH(password) >= 6),
         phone VARCHAR(100) NOT NULL,
-        role TEXT CHECK(role IN ('admin', 'customer')));
+        role TEXT DEFAULT 'customer' CHECK(role IN ('admin', 'customer')));
         `);
 
   await pool.query(`
@@ -37,18 +37,6 @@ const initializeDB = async () => {
         total_price NUMERIC NOT NULL CHECK(total_price > 0),
         status TEXT CHECK(status IN ('active', 'cancelled', 'returned')));
         `);
-  //
-  //
-  //
-  //  await pool.query(`CREATE TABLE IF NOT EXISTS vehicles(
-  // id SERIAL PRIMARY KEY,
-  // vehicle_name VARCHAR(100) NOT NULL,
-  // type ENUM('car', 'bike', 'van', 'SUV') NOT NULL,
-  // email VARCHAR(100) NOT NULL UNIQUE,
-  // )
-  // CREATE INDEX email_lower ON users (lower(email));
-  //    email VARCHAR(70) UNIQUE NOT NULL CHECK (email = LOWER(email))
-  // `);
 };
 
 export default initializeDB;

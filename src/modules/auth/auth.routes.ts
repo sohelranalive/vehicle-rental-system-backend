@@ -3,10 +3,10 @@ import { authControllers } from "./auth.controllers";
 
 const router = express.Router();
 
-// create user "signup"
+// create user or signup
 router.post("/signup", authControllers.createUser);
 
-// signin
+// user signin
 router.post("/signin", authControllers.userSignIn);
 
 export const authRoutes = router;

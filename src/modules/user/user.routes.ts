@@ -4,10 +4,10 @@ import auth from "../../middleware/auth";
 
 const router = express.Router();
 
-// create user
+// get all user
 router.get("/", auth("admin"), userControllers.getAllUsers);
 
-// update
+// update user
 router.put("/:userId", auth("admin", "customer"), userControllers.updateUser);
 
 // delete User

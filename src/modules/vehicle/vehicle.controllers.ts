@@ -106,7 +106,7 @@ const deleteVehicle = async (req: Request, res: Response) => {
     );
     if (result.rowCount === 0) {
       res.status(404).json({
-        success: true,
+        success: false,
         message: `No vehicles found or vehicle currently booked`,
       });
     } else {
