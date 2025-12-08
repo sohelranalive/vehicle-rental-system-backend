@@ -4,7 +4,7 @@ A simple modular based backend for managing vehicle rentals, users, and bookings
 
 ## Live URL
 
-https://www.w3schools.com/postgresql/postgresql_all.php
+https://vehicle-rental-system-backend-delta.vercel.app/
 
 ## Features
 
