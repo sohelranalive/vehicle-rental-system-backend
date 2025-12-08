@@ -9,13 +9,13 @@ https://www.w3schools.com/postgresql/postgresql_all.php
 ## Features
 
 - User registration and login (JWT authentication)
-  \*\* User can register and during register he can made himself admin (it will be updated) or customer, if he don't put anything he will a customer
+  -- User can register and during register he can made himself admin (it will be updated) or customer, if he don't put anything he will a customer
 - Vehicle CRUD operations
-  \*\* Only admin can do this. Add Vehicle, Delete vehicle(only if no booking), Update Vehicle
+  -- Only admin can do this. Add Vehicle, Delete vehicle(only if no booking), Update Vehicle
 - User and admin can book car
-  \*\* User can only book for them self. Admin can book for any existing user.
+  -- User can only book for them self. Admin can book for any existing user.
 - Vehicle availability update when booking status changes
-  \*\* When someone booked a car it's status will be changed.
+  -- When someone booked a car it's status will be changed.
 - Used Modular architecture (routes → controllers → services)
 - PostgreSQL relational datasets (Neon)
 
