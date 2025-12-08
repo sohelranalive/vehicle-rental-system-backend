@@ -43,7 +43,7 @@ https://vehicle-rental-system-backend-delta.vercel.app/
 - JWT for authentication
 - bcrypt for password hashing
 
-## Setup in your local machine
+## Setup & Usages
 
 - git clone https://github.com/sohelranalive/vehicle-rental-system-backend.git
 - cd vehicle-rental-backend
