@@ -4,11 +4,18 @@ import { vehicleServices } from "./vehicle.services";
 const createVehicle = async (req: Request, res: Response) => {
   try {
     const result = await vehicleServices.createVehicle(req.body);
-    res.status(201).json({
-      success: true,
-      message: "Vehicle created successfully",
-      data: result.rows[0],
-    });
+    if (!result) {
+      res.status(400).json({
+        success: false,
+        message: "No valid information found",
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "Vehicle created successfully",
+        data: result.rows[0],
+      });
+    }
   } catch (error: any) {
     res.status(500).json({
       success: false,

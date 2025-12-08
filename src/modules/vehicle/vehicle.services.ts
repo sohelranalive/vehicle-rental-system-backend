@@ -18,6 +18,11 @@ const createVehicle = async (payload: Record<string, unknown>) => {
       values.push(payload[key]);
     }
   }
+
+  if (!keys.length) {
+    return false;
+  }
+
   const updateQuery = keys.map((key, i) => `$${i + 1}`).join(", ");
 
   const result = await pool.query(
