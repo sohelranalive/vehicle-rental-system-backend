@@ -28,6 +28,21 @@ const createVehicle = async (payload: Record<string, unknown>) => {
 };
 
 const getAllVehicle = async () => {
+  // Auto update if date expires this return nothing.
+  const autoUpdateBookingInfo = await pool.query(
+    `UPDATE Bookings SET status = 'returned' WHERE rent_end_date < CURRENT_DATE RETURNING vehicle_id`
+  );
+
+  if (autoUpdateBookingInfo.rows.length) {
+    const autoUpdateVehicleInfo = autoUpdateBookingInfo.rows.map((vehicle) => {
+      const update = pool.query(
+        `UPDATE Vehicles SET availability_status = 'available' WHERE id = $1`,
+        [vehicle.vehicle_id]
+      );
+    });
+  }
+  // end
+
   const result = await pool.query(`SELECT * FROM Vehicles`);
   return result;
 };
