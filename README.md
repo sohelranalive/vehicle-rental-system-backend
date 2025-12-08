@@ -13,6 +13,12 @@ https://vehicle-rental-system-backend-delta.vercel.app/
   - Public can register using basic information (id, name, email, password, phone & role(on registration user can be either "admin" or customer))
   - When a user will login using his credentials (email, password) he/she will be registered as well as will receive a authorization token (JWT authentication)
 
+- User information
+
+  - Admin can see all the users registered into the system.
+  - Admin can delete a user (only if user doesn't have any active booking)
+  - User can update own information and admin can update any users information
+
 - Vehicle operations
 
   - A admin can add new vehicle, delete vehicles(only if vehicle's availability status is not booked), edit vehicle's information using vehicles id.
