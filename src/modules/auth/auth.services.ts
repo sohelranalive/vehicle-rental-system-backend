@@ -16,12 +16,18 @@ const createUser = async (payload: Record<string, unknown>) => {
     }
   }
 
-  const updateQuery = keys.map((key, i) => `$${i + 1}`).join(", ");
+  if (!keys.length) {
+    return false;
+  }
 
-  const passwordIndex = keys.indexOf("password");
-  const password = values[passwordIndex];
-  const hashedPassword = await bcrypt.hash(password as string, 10);
-  values[passwordIndex] = hashedPassword;
+  if (keys.includes("password")) {
+    const passwordIndex = keys.indexOf("password");
+    const password = values[passwordIndex];
+    const hashedPassword = await bcrypt.hash(password as string, 10);
+    values[passwordIndex] = hashedPassword;
+  }
+
+  const updateQuery = keys.map((key, i) => `$${i + 1}`).join(", ");
 
   const result = await pool.query(
     `INSERT INTO Users (${keys}) VALUES(${updateQuery}) RETURNING id, name, email, phone, role`,
@@ -31,8 +37,6 @@ const createUser = async (payload: Record<string, unknown>) => {
 };
 
 const userSignIn = async (payload: Record<string, unknown>) => {
-  // const { email, password } = payload;
-
   let keys = [];
   let values = [];
 
@@ -45,23 +49,27 @@ const userSignIn = async (payload: Record<string, unknown>) => {
     }
   }
 
+  if (!keys.includes("password")) {
+    return false;
+  }
+
   const emailIndex = keys.indexOf("email");
   const email = values[emailIndex];
 
   const passwordIndex = keys.indexOf("password");
   const password = values[passwordIndex];
 
-  const result = await pool.query(`SELECT * FROM Users WHERE email=$1`, [
+  const findUser = await pool.query(`SELECT * FROM Users WHERE email=$1`, [
     email,
   ]);
 
-  const currentUser = result.rows[0];
+  const user = findUser.rows[0];
 
-  if (!currentUser) {
+  if (!user) {
     return false;
   }
 
-  const hashedPassword = currentUser.password;
+  const hashedPassword = user.password;
 
   const matchedPassword = await bcrypt.compare(
     password as string,
@@ -71,15 +79,15 @@ const userSignIn = async (payload: Record<string, unknown>) => {
   if (matchedPassword) {
     const token = jwt.sign(
       {
-        name: currentUser.name,
-        email: currentUser.email,
-        phone: currentUser.phone,
-        role: currentUser.role,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
       },
       config.jwt_secret as string,
       { expiresIn: "7d" }
     );
-    const { password, ...remainingInfo } = currentUser;
+    const { password, ...remainingInfo } = user;
 
     return { token: token, user: remainingInfo };
   }
