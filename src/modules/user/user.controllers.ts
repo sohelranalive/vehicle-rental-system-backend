@@ -69,7 +69,7 @@ const deleteUser = async (req: Request, res: Response) => {
       });
     } else {
       const result = await userServices.deleteUser(req.params.userId as string);
-      if (result.rows.length == 0) {
+      if (result.rowCount == 0) {
         res.status(404).json({
           success: false,
           message: `No user found`,

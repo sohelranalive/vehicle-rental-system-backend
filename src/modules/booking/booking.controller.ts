@@ -45,12 +45,19 @@ const viewBookings = async (req: Request, res: Response) => {
       currentUserEmail,
       currentUserRole
     );
-
-    res.status(201).json({
-      success: true,
-      message: "Bookings retrieved successfully",
-      data: result.rows[0],
-    });
+    if (result.rowCount == 0) {
+      res.status(200).json({
+        success: true,
+        message: "Bookings retrieved successfully",
+        data: "No active bookings found",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Bookings retrieved successfully",
+        data: result.rows,
+      });
+    }
   } catch (error: any) {
     res.status(401).json({
       success: false,
